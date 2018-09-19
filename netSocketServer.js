@@ -3,15 +3,25 @@ var parseData = require('./paresData.js')
 var server = net.createServer();
 var getInfoTimer;
 var setDataTimer;
+var sockets = [];
 const getInfoInterval = 5000
+
+getInfoTimer = setInterval(() => {
+    sockets.forEach(socket => {
+        if (socket.server !== true){
+            getInfo(socket)
+        }
+    });
+}, getInfoInterval);
+
 server.on('close', function () {
     console.log('Server closed !');
 });
 server.on('connection', function (socket) {
     //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
     //Users who experience large or growing bufferSize should attempt to "throttle" the data flows in their program with pause() and resume().
-    socket.setEncoding('hex');
-
+    // socket.setEncoding('hex');
+    sockets.push(socket)
     console.log('Buffer size : ' + socket.bufferSize);
 
     console.log('---------server details -----------------');
@@ -31,12 +41,8 @@ server.on('connection', function (socket) {
     console.log('connection: ' + socket.remoteAddress + ', port:' + socket.remotePort);
     console.log('--------------------------------------------')
     console.log('start interval get info')
-    getInfoTimer = setInterval(() => {
-        getInfo(socket)
-    }, getInfoInterval);
-    // setDataTimer = setInterval(()=>{
 
-    // }, getInfoInterval)
+ 
     console.log('--------------------------------------------')
     server.getConnections(function (error, count) {
         console.log('Number of concurrent connections to the server : ' + count);
@@ -54,14 +60,22 @@ server.on('connection', function (socket) {
         
         console.log('Get Data from remote : ' + data);
         console.log('--------------------------------------------')
-        let json = JSON.stringify(data);
+        
+        try {
+            console.log(data)
 
-        console.log(json);
-        if (json.server == true){
-            // {json.server}
-            console.log('get server data')
-        }else{
-
+            var json = JSON.parse(data.toString('utf8'))
+            if (json.server == true){
+                console.log('get server json data: ' + JSON.stringify(json, null, 2))
+                socket.server = true
+                // console.log(JSON.stringify(obj, null, 2));
+            }else{
+                console.log('json parse success but not server: ' + JSON.stringify(json, null, 2))
+                parseData.parseData(data)
+            }
+        } catch (error) {
+            console.log('json parse error')
+            parseData.parseData(data)
         }
         
         // console.log('start interval get info')
@@ -86,6 +100,7 @@ server.on('connection', function (socket) {
     });
     socket.on('end', function (data) {
         console.log('socket end with data : ' + data);
+        removeSocket(socket)
     });
     socket.on('close', function (error) {
         var bread = socket.bytesRead;
@@ -93,14 +108,16 @@ server.on('connection', function (socket) {
         console.log('Bytes read : ' + bread);
         console.log('Bytes written : ' + bwrite);
         console.log('Socket closed!');
-        clearInterval(getInfoTimer)
+        // clearInterval(getInfoTimer)
         if (error) {
             console.log('Socket was closed coz of transmission error');
         }
     });
 
 })
-
+function removeSocket(socket) {
+    sockets.splice(sockets.indexOf(socket), 1);
+}
 function getInfo(socket) {
     console.log('send getInfo command')
     const buf = Buffer.alloc(16);
@@ -109,6 +126,7 @@ function getInfo(socket) {
     buf.writeUInt8(0xAB, 15)
     socket.write(buf)
 }
+
 
 server.on('error', function (error) {
     console.log('Error: ' + error);

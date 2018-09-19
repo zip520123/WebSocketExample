@@ -2,7 +2,10 @@ var request = require('request');
 module.exports = {
     parseData : function (data) {
     console.log('parseData: ' + data.toString('hex'))
-    
+    if (data.length < 2){
+        console.log("data lenght < 2")
+        return
+    }
     switch (data.readUInt16BE()) {
         case 0xaa24:
             deviceInfo(data)
