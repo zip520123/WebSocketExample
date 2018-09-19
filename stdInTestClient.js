@@ -10,7 +10,14 @@ var rl = readline.createInterface({
 });
 rl.on('line', function (line) {
   if (!client.destroyed) {
-    client.write(line)
+    if (line.indexOf('0x') == 0){
+      var subString = line.substring(2,line.length)
+      var data = Buffer.from(subString,'hex')
+      client.write(data)
+    }else{
+      client.write(line)
+    }
+    
   }else{
     console.log('client destoryed')
   }
@@ -48,8 +55,3 @@ client.on('data', function (data) {
   console.log('Data from server:' + data);
 });
 
-
-
-//   setTimeout(function(){
-//     client.end('Bye bye server');
-//   },5000);

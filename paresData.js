@@ -2,7 +2,7 @@ var request = require('request');
 module.exports = {
     parseData : function (data) {
     console.log('parseData: ' + data.toString('hex'))
-    if (data.length < 2){
+    if (data.length <= 2){
         console.log("data lenght < 2")
         return
     }

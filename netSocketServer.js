@@ -39,9 +39,6 @@ server.on('connection', function (socket) {
     console.log('Server LOCAL ip :' + laddr);
     console.log('------------remote client info --------------');
     console.log('connection: ' + socket.remoteAddress + ', port:' + socket.remotePort);
-    console.log('--------------------------------------------')
-    console.log('start interval get info')
-
  
     console.log('--------------------------------------------')
     server.getConnections(function (error, count) {
@@ -58,7 +55,7 @@ server.on('connection', function (socket) {
     });
     socket.on('data', (data) => {
         
-        console.log('Get Data from remote : ' + data);
+        // console.log('Get Data from remote : ' + data);
         console.log('--------------------------------------------')
         
         try {
@@ -126,7 +123,14 @@ function getInfo(socket) {
     buf.writeUInt8(0xAB, 15)
     socket.write(buf)
 }
-
+function deviceGet() {
+    console.log('send deviceGet')
+    const buf = Buffer.alloc(16);
+    buf.writeUInt8(0xAA, 0)
+    buf.writeUInt8(0x24, 1)
+    buf.writeUInt8(0xAB, 15)
+    sendDataToEachSocket(buf)
+}
 
 server.on('error', function (error) {
     console.log('Error: ' + error);
@@ -135,3 +139,28 @@ server.on('listening', function () {
     console.log('Server is listening!');
 });
 server.listen(8080)
+
+//read line module
+var readline = require('readline');
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+rl.on('line', function (line) {
+    sendDataToEachSocket(line)
+})
+function sendDataToEachSocket(line) {
+    if (line.indexOf('0x') == 0){
+        var subString = line.substring(2,line.length)
+        var data = Buffer.from(subString,'hex')
+        sockets.forEach(socket => {
+            socket.write(data)
+        });    
+      }else{
+        sockets.forEach(socket => {
+            socket.write(line)
+        });    
+      }
+    
+}
