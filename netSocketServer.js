@@ -3,7 +3,7 @@ var parseData = require('./paresData.js')
 var server = net.createServer();
 
 var sockets = [];
-const getInfoInterval = 5000
+const getInfoInterval = 15000
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
@@ -158,11 +158,12 @@ function setDataToDevice(json) {
     // sendDataToEachSocket(playBuf)
     
     const dataArray = []
-    Object.keys(json.FeedSetting).forEach((dataIndex)=>{
+    Object.keys(json.FeedSetting).forEach((dataIndex,index)=>{
         var buf = Buffer.alloc(16)
         buf.wirteUInt8(0xAB,15)
-        json.FeedSetting[dataIndex].forEach((data,index)=>{
-            buf.writeUInt8(data,index)
+        buf.write(index + '0' ,2,hex)
+        json.FeedSetting[dataIndex].forEach((data,index2)=>{
+            buf.writeUInt8(data,index2)
         })
         dataArray.push(buf)
     })
