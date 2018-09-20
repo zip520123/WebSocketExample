@@ -1,12 +1,11 @@
 const net = require('net');
 var parseData = require('./paresData.js')
 var server = net.createServer();
-var getInfoTimer;
-var setDataTimer;
+
 var sockets = [];
 const getInfoInterval = 5000
 
-getInfoTimer = setInterval(() => {
+var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
         if (socket.server !== true){
             getInfo(socket)
@@ -65,6 +64,7 @@ server.on('connection', function (socket) {
             if (json.server == true){
                 console.log('get server json data: ' + JSON.stringify(json, null, 2))
                 socket.server = true
+                setDataToDevice(json)
                 // console.log(JSON.stringify(obj, null, 2));
             }else{
                 console.log('json parse success but not server: ' + JSON.stringify(json, null, 2))
@@ -92,7 +92,7 @@ server.on('connection', function (socket) {
     });
     socket.on('timeout', function () {
         console.log('Socket timed out !');
-        socket.end('Timed out!');
+        // socket.end('Timed out!');
         // can call socket.destroy() here too.
     });
     socket.on('end', function (data) {
@@ -129,9 +129,45 @@ function deviceGet() {
     buf.writeUInt8(0xAA, 0)
     buf.writeUInt8(0x24, 1)
     buf.writeUInt8(0xAB, 15)
-    sendDataToEachSocket(buf)
+    // sendStringToEachSocket(buf)
 }
+function setDataToDevice(json) {
+    // const modeBuf = Buffer.alloc(16)
+    // modeBuf.write('aa90',0,'hex')
+    // modeBuf.writeUInt8(json.Mode,2)
+    // modeBuf.writeUInt8(0xAB, 15)
+    // sendDataToEachSocket(modeBuf)
 
+    // const feedBuf = Buffer.alloc(16)
+    // feedBuf.write('aa91',0,'hex')
+    // feedBuf.writeUInt8(json.Feed,2)
+    // feedBuf.writeUInt8(json.Feed,3)
+    // feedBuf.writeUInt8(0xAB, 15)
+    // sendDataToEachSocket(feedBuf)
+
+    // const preRotaBuf = Buffer.alloc(16)
+    // preRotaBuf.write('aa92',0,'hex')
+    // preRotaBuf.writeUInt8(json.PreRotation,2)
+    // preRotaBuf.writeUInt8(0xAB, 15)
+    // sendDataToEachSocket(preRotaBuf)
+
+    // const playBuf = Buffer.alloc(16)
+    // playBuf.write('aa25',0,'hex')
+
+    // playBuf.writeUInt8(0xAB, 15)
+    // sendDataToEachSocket(playBuf)
+    
+    const dataArray = []
+    Object.keys(json.FeedSetting).forEach((dataIndex)=>{
+        var buf = Buffer.alloc(16)
+        buf.wirteUInt8(0xAB,15)
+        json.FeedSetting[dataIndex].forEach((data,index)=>{
+            buf.writeUInt8(data,index)
+        })
+        dataArray.push(buf)
+    })
+    dataArray.map((buf)=>sendDataToEachSocket(buf))
+}
 server.on('error', function (error) {
     console.log('Error: ' + error);
 });
@@ -148,9 +184,14 @@ var rl = readline.createInterface({
   terminal: false
 });
 rl.on('line', function (line) {
-    sendDataToEachSocket(line)
+    sendStringToEachSocket(line)
 })
-function sendDataToEachSocket(line) {
+function sendDataToEachSocket(data){
+    sockets.forEach(socket => {
+        socket.write(data)
+    }); 
+}
+function sendStringToEachSocket(line) {
     if (line.indexOf('0x') == 0){
         var subString = line.substring(2,line.length)
         var data = Buffer.from(subString,'hex')

@@ -2,7 +2,7 @@ var net = require('net');
 var readline = require('readline');
 var client = new net.Socket();
 //read line module
-client.setEncoding('hex');
+// client.setEncoding('hex');
 var rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -52,6 +52,7 @@ client.on('close',(error) => {
   console.log('close: ' + error);
 })
 client.on('data', function (data) {
-  console.log('Data from server:' + data);
+  console.log('Data from server:' );
+  console.log(data);
 });
 
