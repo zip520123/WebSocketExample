@@ -71,7 +71,7 @@ server.on('connection', function (socket) {
                 parseData.parseData(data)
             }
         } catch (error) {
-            console.log('json parse error')
+            // console.log('json parse error')
             parseData.parseData(data)
         }
         
