@@ -62,7 +62,7 @@ server.on('connection', function (socket) {
 
             var json = JSON.parse(data.toString('utf8'))
             if (json.server == true){
-                console.log('get server json data: ' + JSON.stringify(json, null, 2))
+                //console.log('get server json data: ' + JSON.stringify(json, null, 2))
                 socket.server = true
                 setDataToDevice(json)
                 // console.log(JSON.stringify(obj, null, 2));
@@ -156,7 +156,7 @@ function setDataToDevice(json) {
 
     // playBuf.writeUInt8(0xAB, 15)
     // sendDataToEachSocket(playBuf)
-    
+    console.log("setDataToDevice")
     const dataArray = []
     Object.keys(json.FeedSetting).forEach((dataIndex,index)=>{
         var buf = Buffer.alloc(16)
