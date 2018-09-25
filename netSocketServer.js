@@ -1,7 +1,7 @@
 const net = require('net');
 var parseData = require('./paresData.js')
 var server = net.createServer();
-
+const listenPort = 8080
 var sockets = [];
 const getInfoInterval = 15000
 
@@ -54,11 +54,11 @@ server.on('connection', function (socket) {
     });
     socket.on('data', (data) => {
         
-        // console.log('Get Data from remote : ' + data);
+        
         console.log('--------------------------------------------')
         
         try {
-            console.log(data)
+            // console.log(data)
 
             var json = JSON.parse(data.toString('utf8'))
             if (json.server == true){
@@ -175,7 +175,7 @@ server.on('error', function (error) {
 server.on('listening', function () {
     console.log('Server is listening!');
 });
-server.listen(8080)
+server.listen(listenPort)
 
 //read line module
 var readline = require('readline');
@@ -188,6 +188,7 @@ rl.on('line', function (line) {
     sendStringToEachSocket(line)
 })
 function sendDataToEachSocket(data){
+    console.log("sendDataToEachSocket")
     sockets.forEach(socket => {
         socket.write(data)
     }); 
