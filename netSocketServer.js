@@ -5,7 +5,7 @@ var server = net.createServer();
 const listenPort = 8080
 var sockets = [];
 const getInfoInterval = 15000
-const sleepInterval = 20
+const sleepInterval = 1000
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
