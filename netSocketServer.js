@@ -10,7 +10,7 @@ const sleepInterval = 20
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
         if (socket.server !== true) {
-            getInfo(socket)
+            // getInfo(socket)
         }
     });
 }, getInfoInterval);
@@ -206,10 +206,10 @@ async function setDataToDevice(json) {
         dataArray.push(buf)
     })
     
-    dataArray.map(async function(buf) {
-        sendDataToEachSocket(buf)
-        await sleep(sleepInterval)
-    })
+    // dataArray.map(async function(buf) {
+    //     sendDataToEachSocket(buf)
+    //     await sleep(sleepInterval)
+    // })
 }
 server.on('error', function (error) {
     console.log('Error: ' + error);
