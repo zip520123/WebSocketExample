@@ -222,12 +222,13 @@ async function setDataToDevice(json) {
 //   }
 // }
 function sendDataWithInterval(dataArray){
+    sendDataToEachSocket(dataArray[0])
     if (dataArray.length > 1){
-        setTimeout(() => {
-            dataArray.slice(1)
+        setTimeout(() => {sendDataWithInterval(dataArray.slice(1))
         }, sleepInterval);
     }
 }
+
 // doSomething(letters);
 
 server.on('error', function (error) {
