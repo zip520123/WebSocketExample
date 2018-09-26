@@ -172,7 +172,7 @@ function setDataToDevice(json) {
         var buf = Buffer.alloc(16)
         buf.writeUInt8(0xAB,15)
         
-        buf.write(index + '0' ,2,hex)
+        buf.write(index + '0' ,2,'hex')
         json.FeedSetting[dataIndex].forEach((data,index2)=>{
             buf.writeUInt8(data,index2)
         })
