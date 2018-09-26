@@ -207,23 +207,28 @@ async function setDataToDevice(json) {
     })
     
     // dataArray.map(async (buf) => {
-    //     sendDataToEachSocket(buf)
-    //     await sleep(sleepInterval)
+        
     // })
+
     sendDataWithInterval(dataArray)
+    
 }
-async function sendDataWithInterval(dataArray) {
-    dataArray.forEach(async (buf)=>{
-        await delayedSend(buf)
-    })
+// let letters = ["a", "b", "c"];
+
+// function doSomething(arr) {
+//   console.log(arr[0]);
+//   if (arr.length > 1) {
+//     setTimeout(() => doSomething(arr.slice(1)), 1000);
+//   }
+// }
+function sendDataWithInterval(dataArray){
+    if (dataArray.length > 1){
+        setTimeout(() => {
+            dataArray.slice(1)
+        }, sleepInterval);
+    }
 }
-async function delayedSend(buf) {
-    await delay()
-    sendDataToEachSocket(buf)
-}
-function delay() {
-    return new Promise(resolve => setTimeout(resolve,sleepInterval))
-}
+// doSomething(letters);
 
 server.on('error', function (error) {
     console.log('Error: ' + error);
