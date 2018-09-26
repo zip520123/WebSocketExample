@@ -43,22 +43,27 @@ function setDataBackToServer(data) {
         for (var i = 0; i < 10; i += 1) {
             dataList.push(data.readUInt8(i + 3))
         }
-        jsonDataObj.FeedSetting = {
+        json.FeedSetting = {
             [dataIndex]: dataList
         }
     }
     if (data.readUInt16BE() === 0xaa25) {
-        var number = data.readUInt8(2)
-        var dataIndex = 'Data' + number
-        var dataList = []
-        for (var i = 0; i < 10; i += 1) {
-            dataList.push(data.readUInt8(i + 3))
-        }
-        jsonDataObj.FeedSetting = {
-            [dataIndex]: dataList
-        }
+        var value = data.readUInt8(2)
+        json.Status = value
     }
-
+    if (data.readUInt16BE() === 0xaa90) {
+        var value = data.readUInt8(2)
+        json.Mode = value
+    }
+    if (data.readUInt16BE() === 0xaa91) {
+        var value = data.readUInt8(2)
+        var value2 = data.readUInt8(3)
+        json.Feed = value * 100 + value2
+    }
+    if (data.readUInt16BE() === 0xaa92) {
+        var value = data.readUInt8(2)
+        json.PreRotation = value
+    }
 
     postJSON(json)
 
