@@ -75,9 +75,10 @@ server.on('connection', function (socket) {
             } else {
                 // fs.appendFile("log.txt", data.toString('hex'), function (err) {
                 //     if (err) { return console.log("writeFile error: " + err);                  }
+
                 // });
                 // console.log('json parse success but not server: ' + JSON.stringify(json, null, 2))
-                // parseData.parseData(data)
+                parseData.parseData(data)
             }
         } catch (error) {
             console.log('error: ' + error)

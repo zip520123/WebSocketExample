@@ -78,7 +78,7 @@ function deviceInfo(data) {
         "TotalWeight": 250,
         "DayWeight": 200
     }
-    // console.log(jsonDataObj)
+    console.log(jsonDataObj)
     request.post({
         headers: {
             'content-type': 'application/json'
