@@ -1,4 +1,5 @@
 const net = require('net');
+var fs = require('fs');
 var parseData = require('./paresData.js')
 var server = net.createServer();
 const listenPort = 8080
@@ -56,6 +57,13 @@ server.on('connection', function (socket) {
         
         
         console.log('--------------------------------------------')
+        fs.appendFile("log.txt",'\n--------------------------------------------\n' ,(e)=>{ })
+        fs.appendFile("log.txt", data.toString('utf8'), function(err) {
+            if(err) {
+                return console.log("writeFile error: " + err);
+            }
+            console.log("The file was saved!");
+        }); 
         
         try {
             // console.log(data)
