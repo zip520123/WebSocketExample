@@ -5,7 +5,7 @@ var server = net.createServer();
 const listenPort = 8080
 var sockets = [];
 const getInfoInterval = 15000
-const sleepInterval = 1000
+const sleepInterval = 100
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
@@ -206,10 +206,10 @@ async function setDataToDevice(json) {
         dataArray.push(buf)
     })
     
-    // dataArray.map(async function(buf) {
-    //     sendDataToEachSocket(buf)
-    //     await sleep(sleepInterval)
-    // })
+    dataArray.map(async function(buf) {
+        sendDataToEachSocket(buf)
+        await sleep(sleepInterval)
+    })
 }
 server.on('error', function (error) {
     console.log('Error: ' + error);
