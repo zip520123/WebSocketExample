@@ -174,7 +174,7 @@ function setDataToDevice(json) {
         buf.writeUInt8(0x23,1)
         buf.writeUInt8(0xAB,15)
         
-        buf.write(index + '0' ,2,'hex')
+        buf.write(index + 1 + '0' ,2,'hex')
         json.FeedSetting[dataIndex].forEach((data,index2)=>{
             buf.writeUInt8(data,index2 + 3)
         })
@@ -203,7 +203,9 @@ rl.on('line', function (line) {
 })
 function sendDataToEachSocket(data){
     sockets.forEach(socket => {
-        socket.write(data)
+        if (socket.server !== true) {
+            socket.write(data)
+        }
     }); 
 }
 function sendStringToEachSocket(line) {
