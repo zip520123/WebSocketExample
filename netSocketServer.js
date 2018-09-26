@@ -170,11 +170,13 @@ function setDataToDevice(json) {
     const dataArray = []
     Object.keys(json.FeedSetting).forEach((dataIndex,index)=>{
         var buf = Buffer.alloc(16)
+        buf.writeUInt8(0xAA,0)
+        buf.writeUInt8(0x23,1)
         buf.writeUInt8(0xAB,15)
         
         buf.write(index + '0' ,2,'hex')
         json.FeedSetting[dataIndex].forEach((data,index2)=>{
-            buf.writeUInt8(data,index2)
+            buf.writeUInt8(data,index2 + 3)
         })
         console.log(buf)
         dataArray.push(buf)
@@ -200,7 +202,6 @@ rl.on('line', function (line) {
     sendStringToEachSocket(line)
 })
 function sendDataToEachSocket(data){
-    console.log("sendDataToEachSocket")
     sockets.forEach(socket => {
         socket.write(data)
     }); 
