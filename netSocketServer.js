@@ -8,7 +8,7 @@ const getInfoInterval = 15000
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
-        if (socket.server !== true){
+        if (socket.server !== true) {
             getInfo(socket)
         }
     });
@@ -39,7 +39,7 @@ server.on('connection', function (socket) {
     console.log('Server LOCAL ip :' + laddr);
     console.log('------------remote client info --------------');
     console.log('connection: ' + socket.remoteAddress + ', port:' + socket.remotePort);
- 
+
     console.log('--------------------------------------------')
     server.getConnections(function (error, count) {
         console.log('Number of concurrent connections to the server : ' + count);
@@ -54,42 +54,43 @@ server.on('connection', function (socket) {
         console.log('Socket timed out');
     });
     socket.on('data', (data) => {
-        
-        
+
+
+
         console.log('--------------------------------------------')
-        fs.appendFile("log.txt",'\n--------------------------------------------\n' ,(e)=>{ })
-        fs.appendFile("log.txt", data.toString('utf8'), function(err) {
-            if(err) {
-                return console.log("writeFile error: " + err);
-            }
-            console.log("The file was saved!");
-        }); 
-        
+        fs.appendFile("log.txt", '\n--------------------------------------------\n', (e) => {})
         try {
-            // console.log(data)
+            console.log(data)
 
             var json = JSON.parse(data.toString('utf8'))
-            if (json.server == true){
-                //console.log('get server json data: ' + JSON.stringify(json, null, 2))
+            if (json.server == true) {
+
+                fs.appendFile("log.txt", data.toString('utf8'), function (err) {
+                    if (err) { return console.log("writeFile error: " + err);                  }
+                });
+
                 socket.server = true
                 setDataToDevice(json)
-                // console.log(JSON.stringify(obj, null, 2));
-            }else{
-                console.log('json parse success but not server: ' + JSON.stringify(json, null, 2))
+
+            } else {
+                fs.appendFile("log.txt", data.toString('hex'), function (err) {
+                    if (err) { return console.log("writeFile error: " + err);                  }
+                });
+                // console.log('json parse success but not server: ' + JSON.stringify(json, null, 2))
                 parseData.parseData(data)
             }
         } catch (error) {
-            console.log('json parse error: ' + error)
-            // parseData.parseData(data)
+            console.log('error: ' + error)
+
         }
-        
+
         // console.log('start interval get info')
         // getInfoTimer = setInterval(() => {
         //     getInfo(socket)
         // }, getInfoInterval);
         // parseData.parseData(data)
-        
-        
+
+
     });
     socket.on('drain', function () {
         console.log('write buffer is empty now .. u can resume the writable stream');
@@ -122,9 +123,11 @@ server.on('connection', function (socket) {
     });
 
 })
+
 function removeSocket(socket) {
     sockets.splice(sockets.indexOf(socket), 1);
 }
+
 function getInfo(socket) {
     console.log('send getInfo command')
     const buf = Buffer.alloc(16);
@@ -133,6 +136,7 @@ function getInfo(socket) {
     buf.writeUInt8(0xAB, 15)
     socket.write(buf)
 }
+
 function deviceGet() {
     console.log('send deviceGet')
     const buf = Buffer.alloc(16);
@@ -141,6 +145,7 @@ function deviceGet() {
     buf.writeUInt8(0xAB, 15)
     // sendStringToEachSocket(buf)
 }
+
 function setDataToDevice(json) {
     // const modeBuf = Buffer.alloc(16)
     // modeBuf.write('aa90',0,'hex')
@@ -168,20 +173,20 @@ function setDataToDevice(json) {
     // sendDataToEachSocket(playBuf)
     console.log("setDataToDevice")
     const dataArray = []
-    Object.keys(json.FeedSetting).forEach((dataIndex,index)=>{
+    Object.keys(json.FeedSetting).forEach((dataIndex, index) => {
         var buf = Buffer.alloc(16)
-        buf.writeUInt8(0xAA,0)
-        buf.writeUInt8(0x23,1)
-        buf.writeUInt8(0xAB,15)
-        
-        buf.write(index + 1 + '0' ,2,'hex')
-        json.FeedSetting[dataIndex].forEach((data,index2)=>{
-            buf.writeUInt8(data,index2 + 3)
+        buf.writeUInt8(0xAA, 0)
+        buf.writeUInt8(0x23, 1)
+        buf.writeUInt8(0xAB, 15)
+
+        buf.write(index + 1 + '0', 2, 'hex')
+        json.FeedSetting[dataIndex].forEach((data, index2) => {
+            buf.writeUInt8(data, index2 + 3)
         })
         console.log(buf)
         dataArray.push(buf)
     })
-    dataArray.map((buf)=>sendDataToEachSocket(buf))
+    dataArray.map((buf) => sendDataToEachSocket(buf))
 }
 server.on('error', function (error) {
     console.log('Error: ' + error);
@@ -194,31 +199,33 @@ server.listen(listenPort)
 //read line module
 var readline = require('readline');
 var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
 });
 rl.on('line', function (line) {
     sendStringToEachSocket(line)
 })
-function sendDataToEachSocket(data){
+
+function sendDataToEachSocket(data) {
     sockets.forEach(socket => {
         if (socket.server !== true) {
             socket.write(data)
         }
-    }); 
+    });
 }
+
 function sendStringToEachSocket(line) {
-    if (line.indexOf('0x') == 0){
-        var subString = line.substring(2,line.length)
-        var data = Buffer.from(subString,'hex')
+    if (line.indexOf('0x') == 0) {
+        var subString = line.substring(2, line.length)
+        var data = Buffer.from(subString, 'hex')
         sockets.forEach(socket => {
             socket.write(data)
-        });    
-      }else{
+        });
+    } else {
         sockets.forEach(socket => {
             socket.write(line)
-        });    
-      }
-    
+        });
+    }
+
 }
