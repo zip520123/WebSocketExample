@@ -5,6 +5,7 @@ var server = net.createServer();
 const listenPort = 8080
 var sockets = [];
 const getInfoInterval = 15000
+const sleepInterval = 20
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
@@ -165,7 +166,7 @@ async function setDataToDevice(json) {
     modeBuf.writeUInt8(json.Mode, 2)
     modeBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(modeBuf)
-    await sleep(10)
+    await sleep(sleepInterval)
 
     const feedBuf = Buffer.alloc(16)
     feedBuf.write('aa91', 0, 'hex')
@@ -173,21 +174,21 @@ async function setDataToDevice(json) {
     feedBuf.writeUInt8(json.Feed % 100, 3)
     feedBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(feedBuf)
-    await sleep(10)
+    await sleep(sleepInterval)
 
     const preRotaBuf = Buffer.alloc(16)
     preRotaBuf.write('aa92', 0, 'hex')
     preRotaBuf.writeUInt8(json.PreRotation, 2)
     preRotaBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(preRotaBuf)
-    await sleep(10)
+    await sleep(sleepInterval)
 
     const playBuf = Buffer.alloc(16)
     playBuf.write('aa25', 0, 'hex')
     playBuf.writeUInt8(json.Status, 2)
     playBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(playBuf)
-    await sleep(10)
+    await sleep(sleepInterval)
 
     console.log("setDataToDevice")
     const dataArray = []
@@ -204,10 +205,10 @@ async function setDataToDevice(json) {
         console.log(buf)
         dataArray.push(buf)
     })
-    await sleep(10)
+    
     dataArray.map(async function(buf) {
         sendDataToEachSocket(buf)
-        await sleep(10)
+        await sleep(sleepInterval)
     })
 }
 server.on('error', function (error) {
