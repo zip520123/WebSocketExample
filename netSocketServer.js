@@ -79,8 +79,8 @@ server.on('connection', function (socket) {
                 parseData.parseData(data)
             }
         } catch (error) {
-            // console.log('json parse error')
-            parseData.parseData(data)
+            console.log('json parse error: ' + error)
+            // parseData.parseData(data)
         }
         
         // console.log('start interval get info')
@@ -97,6 +97,8 @@ server.on('connection', function (socket) {
     });
     socket.on('error', function (error) {
         console.log('Error : ' + error);
+        console.log('remove socket from sockets pool');
+        removeSocket(socket)
     });
     socket.on('timeout', function () {
         console.log('Socket timed out !');
@@ -173,6 +175,7 @@ function setDataToDevice(json) {
         json.FeedSetting[dataIndex].forEach((data,index2)=>{
             buf.writeUInt8(data,index2)
         })
+        console.log(buf)
         dataArray.push(buf)
     })
     dataArray.map((buf)=>sendDataToEachSocket(buf))
