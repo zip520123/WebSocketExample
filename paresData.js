@@ -11,9 +11,14 @@ module.exports = {
             case 0xaa24: //get info
                 deviceInfo(data)
                 break;
-            case 0xaa22:
+            case 0xaa22: //set Data
+            case 0xaa25:
+            case 0xaa90:
+            case 0xaa91:
+            case 0xaa92:
                 setDataBackToServer(data)
                 break;
+
             default:
                 console.log('parse not in case')
                 break;
@@ -23,20 +28,43 @@ module.exports = {
 
 function setDataBackToServer(data) {
     console.log("setDataBackToServer")
-    var jsonString = '{"FeederID":"138fbf4e-12e3-4591-b769-d635e4476348","HashID":"8657194522","Timestamp":"2018-09-18 11:21:48","FeedSetting":{"Data1":[1,5,3,30,3,0,0,50,6,0],"Data2":[0,0,0,0,0,0,0,0,0,0],"Data3":[0,0,0,0,0,0,0,0,0,0],"Data4":[0,0,0,0,0,0,0,0,0,0],"Data5":[0,0,0,0,0,0,0,0,0,0],"Data6":[0,0,0,0,0,0,0,0,0,0]},"Status":0,"Feed":0,"PreRotation":0,"Mode":0,"SchemaVer":"1.0"}'
+    // var jsonString = '{"FeederID":"138fbf4e-12e3-4591-b769-d635e4476348","HashID":"8657194522","Timestamp":"2018-09-18 11:21:48","FeedSetting":{"Data1":[1,5,3,30,3,0,0,50,6,0],"Data2":[0,0,0,0,0,0,0,0,0,0],"Data3":[0,0,0,0,0,0,0,0,0,0],"Data4":[0,0,0,0,0,0,0,0,0,0],"Data5":[0,0,0,0,0,0,0,0,0,0],"Data6":[0,0,0,0,0,0,0,0,0,0]},"Status":0,"Feed":0,"PreRotation":0,"Mode":0,"SchemaVer":"1.0"}'
 
-    var json = JSON.parse(jsonString)
-    var number = data.readUInt8(2)
-
-    Object.keys(json.FeedSetting).map((dataIndex, index) => {
-        if ((number >> 4) - 1 === index) {
-            for (var i = 0; i<10 ; i += 1){
-                json.FeedSetting[dataIndex][i] = data.readUInt8(i + 3)
-            }
+    var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+    var json = {
+        "FeederID": "138fbf4e-12e3-4591-b769-d635e4476348",
+        "HashID": "8657194522",
+        "Timestamp": date
+    }
+    if (data.readUInt16BE() === 0xaa22) {
+        var number = data.readUInt8(2) >> 4
+        var dataIndex = 'Data' + number
+        var dataList = []
+        for (var i = 0; i < 10; i += 1) {
+            dataList.push(data.readUInt8(i + 3))
         }
-    })
+        jsonDataObj.FeedSetting = {
+            [dataIndex]: dataList
+        }
+    }
+    if (data.readUInt16BE() === 0xaa25) {
+        var number = data.readUInt8(2)
+        var dataIndex = 'Data' + number
+        var dataList = []
+        for (var i = 0; i < 10; i += 1) {
+            dataList.push(data.readUInt8(i + 3))
+        }
+        jsonDataObj.FeedSetting = {
+            [dataIndex]: dataList
+        }
+    }
 
 
+    postJSON(json)
+
+}
+
+function postJSON(json) {
     request.post({
         headers: {
             'content-type': 'application/json'

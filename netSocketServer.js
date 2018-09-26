@@ -66,7 +66,9 @@ server.on('connection', function (socket) {
             if (json.server == true) {
 
                 fs.appendFile("log.txt", data.toString('utf8'), function (err) {
-                    if (err) { return console.log("writeFile error: " + err);                  }
+                    if (err) {
+                        return console.log("writeFile error: " + err);
+                    }
                 });
 
                 socket.server = true
@@ -147,32 +149,45 @@ function deviceGet() {
     // sendStringToEachSocket(buf)
 }
 
-function setDataToDevice(json) {
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// async function demo() {
+//     console.log('Taking a break...');
+//     await sleep(2000);
+//     console.log('Two seconds later');
+// }
+
+async function setDataToDevice(json) {
     const modeBuf = Buffer.alloc(16)
-    modeBuf.write('aa90',0,'hex')
-    modeBuf.writeUInt8(json.Mode,2)
+    modeBuf.write('aa90', 0, 'hex')
+    modeBuf.writeUInt8(json.Mode, 2)
     modeBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(modeBuf)
+    await sleep(10)
 
     const feedBuf = Buffer.alloc(16)
-    feedBuf.write('aa91',0,'hex')
-    
-    feedBuf.writeUInt8(Math.floor((json.Feed / 100)) ,2)
-    feedBuf.writeUInt8(json.Feed % 100 ,3)
+    feedBuf.write('aa91', 0, 'hex')
+    feedBuf.writeUInt8(Math.floor((json.Feed / 100)), 2)
+    feedBuf.writeUInt8(json.Feed % 100, 3)
     feedBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(feedBuf)
+    await sleep(10)
 
     const preRotaBuf = Buffer.alloc(16)
-    preRotaBuf.write('aa92',0,'hex')
-    preRotaBuf.writeUInt8(json.PreRotation,2)
+    preRotaBuf.write('aa92', 0, 'hex')
+    preRotaBuf.writeUInt8(json.PreRotation, 2)
     preRotaBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(preRotaBuf)
+    await sleep(10)
 
     const playBuf = Buffer.alloc(16)
-    playBuf.write('aa25',0,'hex')
-    playBuf.writeUInt8(json.Status,2)
+    playBuf.write('aa25', 0, 'hex')
+    playBuf.writeUInt8(json.Status, 2)
     playBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(playBuf)
+    await sleep(10)
 
     console.log("setDataToDevice")
     const dataArray = []
@@ -189,7 +204,11 @@ function setDataToDevice(json) {
         console.log(buf)
         dataArray.push(buf)
     })
-    dataArray.map((buf) => sendDataToEachSocket(buf))
+    await sleep(10)
+    dataArray.map((buf) => {
+        sendDataToEachSocket(buf)
+        await sleep(10)
+    })
 }
 server.on('error', function (error) {
     console.log('Error: ' + error);
