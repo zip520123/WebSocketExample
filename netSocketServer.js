@@ -156,8 +156,9 @@ function setDataToDevice(json) {
 
     const feedBuf = Buffer.alloc(16)
     feedBuf.write('aa91',0,'hex')
-    feedBuf.writeUInt8(json.Feed,2)
-    feedBuf.writeUInt8(json.Feed,3)
+    
+    feedBuf.writeUInt8(Math.floor((json.Feed / 100)) ,2)
+    feedBuf.writeUInt8(json.Feed % 100 ,3)
     feedBuf.writeUInt8(0xAB, 15)
     sendDataToEachSocket(feedBuf)
 
