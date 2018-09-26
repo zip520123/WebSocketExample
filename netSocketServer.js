@@ -147,30 +147,31 @@ function deviceGet() {
 }
 
 function setDataToDevice(json) {
-    // const modeBuf = Buffer.alloc(16)
-    // modeBuf.write('aa90',0,'hex')
-    // modeBuf.writeUInt8(json.Mode,2)
-    // modeBuf.writeUInt8(0xAB, 15)
-    // sendDataToEachSocket(modeBuf)
+    const modeBuf = Buffer.alloc(16)
+    modeBuf.write('aa90',0,'hex')
+    modeBuf.writeUInt8(json.Mode,2)
+    modeBuf.writeUInt8(0xAB, 15)
+    sendDataToEachSocket(modeBuf)
 
-    // const feedBuf = Buffer.alloc(16)
-    // feedBuf.write('aa91',0,'hex')
-    // feedBuf.writeUInt8(json.Feed,2)
-    // feedBuf.writeUInt8(json.Feed,3)
-    // feedBuf.writeUInt8(0xAB, 15)
-    // sendDataToEachSocket(feedBuf)
+    const feedBuf = Buffer.alloc(16)
+    feedBuf.write('aa91',0,'hex')
+    feedBuf.writeUInt8(json.Feed,2)
+    feedBuf.writeUInt8(json.Feed,3)
+    feedBuf.writeUInt8(0xAB, 15)
+    sendDataToEachSocket(feedBuf)
 
-    // const preRotaBuf = Buffer.alloc(16)
-    // preRotaBuf.write('aa92',0,'hex')
-    // preRotaBuf.writeUInt8(json.PreRotation,2)
-    // preRotaBuf.writeUInt8(0xAB, 15)
-    // sendDataToEachSocket(preRotaBuf)
+    const preRotaBuf = Buffer.alloc(16)
+    preRotaBuf.write('aa92',0,'hex')
+    preRotaBuf.writeUInt8(json.PreRotation,2)
+    preRotaBuf.writeUInt8(0xAB, 15)
+    sendDataToEachSocket(preRotaBuf)
 
-    // const playBuf = Buffer.alloc(16)
-    // playBuf.write('aa25',0,'hex')
+    const playBuf = Buffer.alloc(16)
+    playBuf.write('aa25',0,'hex')
+    playBuf.writeUInt8(json.Status,2)
+    playBuf.writeUInt8(0xAB, 15)
+    sendDataToEachSocket(playBuf)
 
-    // playBuf.writeUInt8(0xAB, 15)
-    // sendDataToEachSocket(playBuf)
     console.log("setDataToDevice")
     const dataArray = []
     Object.keys(json.FeedSetting).forEach((dataIndex, index) => {
