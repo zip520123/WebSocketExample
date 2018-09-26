@@ -205,7 +205,7 @@ async function setDataToDevice(json) {
         dataArray.push(buf)
     })
     await sleep(10)
-    dataArray.map((buf) => {
+    dataArray.map(async function(buf) {
         sendDataToEachSocket(buf)
         await sleep(10)
     })
