@@ -13,11 +13,15 @@ module.exports = {
                 deviceInfo(data)
                 break;
             case 0xaa22: //set Data
-            case 0xaa21:
-            case 0xaa90:
-            case 0xaa91:
-            case 0xaa92:
+            case 0xaa21: //set status
+            case 0xaa28: //mode
+            case 0xaa26: //feed
+            case 0xaa27: //preRotation
+
                 setDataBackToServer(data)
+                break;
+            case 0xaa32: //reset
+                resetRequest()
                 break;
             default:
                 console.log('parse not in case')
@@ -51,22 +55,41 @@ function setDataBackToServer(data) {
         var value = data.readUInt8(3)
         json.Status = value
     }
-    if (data.readUInt16BE() === 0xaa90) {
+    if (data.readUInt16BE() === 0xaa28) {
         var value = data.readUInt8(2)
         json.Mode = value
     }
-    if (data.readUInt16BE() === 0xaa91) {
+    if (data.readUInt16BE() === 0xaa26) {
         var value = data.readUInt8(2)
         var value2 = data.readUInt8(3)
         json.Feed = value * 100 + value2
     }
-    if (data.readUInt16BE() === 0xaa92) {
+    if (data.readUInt16BE() === 0xaa27) {
         var value = data.readUInt8(2)
         json.PreRotation = value
     }
+
     console.log(json)
     postJSON(json)
 
+}
+
+function resetRequest() {
+    var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+    var json = {
+        "FeederID": "138fbf4e-12e3-4591-b769-d635e4476348",
+        "HashID": "8657194522",
+        "Timestamp": date,
+        "FeedSetting": {
+            "Data1": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "Data2": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "Data3": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "Data4": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "Data5": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "Data6": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        },
+    }
+    postJSON(json)
 }
 
 function postJSON(json) {
@@ -78,7 +101,7 @@ function postJSON(json) {
         body: json,
         json: true
     }, function (error, response, body) {
-        console.log(error , body);
+        console.log(error, body);
     });
 }
 
