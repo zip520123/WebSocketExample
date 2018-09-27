@@ -11,14 +11,13 @@ module.exports = {
             case 0xaa24: //get info
                 deviceInfo(data)
                 break;
-            case 0xaa30: //set Data
+            case 0xaa22: //set Data
             case 0xaa21:
             case 0xaa90:
             case 0xaa91:
             case 0xaa92:
                 setDataBackToServer(data)
                 break;
-
             default:
                 console.log('parse not in case')
                 break;
@@ -36,7 +35,7 @@ function setDataBackToServer(data) {
         "HashID": "8657194522",
         "Timestamp": date
     }
-    if (data.readUInt16BE() === 0xaa30) {
+    if (data.readUInt16BE() === 0xaa22) {
         var number = data.readUInt8(2) >> 4
         var dataIndex = 'Data' + number
         var dataList = []
@@ -64,7 +63,7 @@ function setDataBackToServer(data) {
         var value = data.readUInt8(2)
         json.PreRotation = value
     }
-
+    console.log(json)
     postJSON(json)
 
 }
