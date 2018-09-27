@@ -155,37 +155,50 @@ function sleep(ms) {
 }
 
 async function setDataToDevice(json) {
+
+    const dataArray = []
+
+    
+
     const modeBuf = Buffer.alloc(16)
     modeBuf.write('aa90', 0, 'hex')
     modeBuf.writeUInt8(json.Mode, 2)
     modeBuf.writeUInt8(0xAB, 15)
-    sendDataToEachSocket(modeBuf)
-    await sleep(sleepInterval)
+
+    dataArray.push(modeBuf)
+    // sendDataToEachSocket(modeBuf)
+    // await sleep(sleepInterval)
 
     const feedBuf = Buffer.alloc(16)
     feedBuf.write('aa91', 0, 'hex')
     feedBuf.writeUInt8(Math.floor((json.Feed / 100)), 2)
     feedBuf.writeUInt8(json.Feed % 100, 3)
     feedBuf.writeUInt8(0xAB, 15)
-    sendDataToEachSocket(feedBuf)
-    await sleep(sleepInterval)
+
+    dataArray.push(feedBuf)
+    // sendDataToEachSocket(feedBuf)
+    // await sleep(sleepInterval)
 
     const preRotaBuf = Buffer.alloc(16)
     preRotaBuf.write('aa92', 0, 'hex')
     preRotaBuf.writeUInt8(json.PreRotation, 2)
     preRotaBuf.writeUInt8(0xAB, 15)
-    sendDataToEachSocket(preRotaBuf)
-    await sleep(sleepInterval)
+
+    dataArray.push(preRotaBuf)
+    // sendDataToEachSocket(preRotaBuf)
+    // await sleep(sleepInterval)
 
     const playBuf = Buffer.alloc(16)
     playBuf.write('aa25', 0, 'hex')
     playBuf.writeUInt8(json.Status, 2)
     playBuf.writeUInt8(0xAB, 15)
-    sendDataToEachSocket(playBuf)
-    await sleep(sleepInterval)
+
+    dataArray.push(playBuf)
+    // sendDataToEachSocket(playBuf)
+    // await sleep(sleepInterval)
 
     console.log("setDataToDevice")
-    const dataArray = []
+    
     Object.keys(json.FeedSetting).forEach((dataIndex, index) => {
         var buf = Buffer.alloc(16)
         buf.writeUInt8(0xAA, 0)
