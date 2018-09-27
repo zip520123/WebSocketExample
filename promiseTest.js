@@ -1,10 +1,13 @@
-let letters = ["a", "b", "c"];
-
-function doSomething(arr) {
-  console.log(arr[0]);
-  if (arr.length > 1) {
-    setTimeout(() => doSomething(arr.slice(1)), 1000);
+const sleepInterval = 2000
+function sendDataToEachSocket(data){
+  console.log(data)
+}
+var f = (array) => {
+  sendDataToEachSocket(array[0])
+  if (array.length > 1){
+      setTimeout(()=>{
+        f(array.slice(1))
+      },sleepInterval)
   }
 }
-
-doSomething(letters);
+f([1,2,3,4,5])

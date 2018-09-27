@@ -11,8 +11,8 @@ module.exports = {
             case 0xaa24: //get info
                 deviceInfo(data)
                 break;
-            case 0xaa22: //set Data
-            case 0xaa25:
+            case 0xaa30: //set Data
+            case 0xaa21:
             case 0xaa90:
             case 0xaa91:
             case 0xaa92:
@@ -36,7 +36,7 @@ function setDataBackToServer(data) {
         "HashID": "8657194522",
         "Timestamp": date
     }
-    if (data.readUInt16BE() === 0xaa22) {
+    if (data.readUInt16BE() === 0xaa30) {
         var number = data.readUInt8(2) >> 4
         var dataIndex = 'Data' + number
         var dataList = []
@@ -47,8 +47,8 @@ function setDataBackToServer(data) {
             [dataIndex]: dataList
         }
     }
-    if (data.readUInt16BE() === 0xaa25) {
-        var value = data.readUInt8(2)
+    if (data.readUInt16BE() === 0xaa21) {
+        var value = data.readUInt8(3)
         json.Status = value
     }
     if (data.readUInt16BE() === 0xaa90) {

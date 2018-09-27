@@ -154,12 +154,6 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// async function demo() {
-//     console.log('Taking a break...');
-//     await sleep(2000);
-//     console.log('Two seconds later');
-// }
-
 async function setDataToDevice(json) {
     const modeBuf = Buffer.alloc(16)
     modeBuf.write('aa90', 0, 'hex')
@@ -205,31 +199,37 @@ async function setDataToDevice(json) {
         console.log(buf)
         dataArray.push(buf)
     })
-    
-    // dataArray.map(async (buf) => {
-        
-    // })
 
-    sendDataWithInterval(dataArray)
-    
-}
-// let letters = ["a", "b", "c"];
 
-// function doSomething(arr) {
-//   console.log(arr[0]);
-//   if (arr.length > 1) {
-//     setTimeout(() => doSomething(arr.slice(1)), 1000);
-//   }
-// }
-function sendDataWithInterval(dataArray){
-    sendDataToEachSocket(dataArray[0])
-    if (dataArray.length > 1){
-        setTimeout(() => {sendDataWithInterval(dataArray.slice(1))
-        }, sleepInterval);
+    // sendDataWithInterval(dataArray)
+    // (function sendLoop(array){
+    //     sendDataToEachSocket(array[0])    
+    //     if (array.length > 1){
+    //         setTimeout(()=>{
+    //             sendLoop(array.slice(1))
+    //         },sleepInterval)
+    //     }
+    // })(dataArray)
+
+    var f = (array) => {
+        sendDataToEachSocket(array[0])
+        if (array.length > 1){
+            setTimeout(()=>{
+              f(array.slice(1))
+            },sleepInterval)
+        }
     }
+    f(dataArray)
 }
+// function sendDataWithInterval(dataArray){
+//     sendDataToEachSocket(dataArray[0])
+//     if (dataArray.length > 1){
+//         setTimeout(() => {sendDataWithInterval(dataArray.slice(1))
+//         }, sleepInterval);
+//     }
+// }
 
-// doSomething(letters);
+
 
 server.on('error', function (error) {
     console.log('Error: ' + error);
