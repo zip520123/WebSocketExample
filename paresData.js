@@ -1,5 +1,6 @@
 var request = require('request');
-const serverHost = 'http://220.130.165.91:8801/api'
+// const serverHost = 'http://220.130.165.91:8801/api'
+const serverHost = 'http://127.0.0.1/api'
 module.exports = {
     parseData: function (data) {
         //console.log('parseData: ' + data.toString('hex'))
@@ -77,7 +78,7 @@ function postJSON(json) {
         body: json,
         json: true
     }, function (error, response, body) {
-        console.log(body);
+        console.log(error , body);
     });
 }
 
