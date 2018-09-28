@@ -229,7 +229,7 @@ async function setDataToDevice(json) {
                 console.log("time="+(new Date()-date))
                 console.log(array[0])
                 socket.write(array[0], () =>{
-                    if (array.lenght > 0){
+                    if (array.length > 1){
                         setTimeout(() => {
                             f(array.slice(1))
                         }, sleepInterval);
