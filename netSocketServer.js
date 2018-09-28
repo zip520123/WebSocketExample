@@ -234,10 +234,14 @@ async function setDataToDevice(json) {
     // }
     // f(dataArray)
 }
+var date = new Date()
 function sendDataWithInterval(dataArray){
+    
+    console.log("time="+(new Date()-date))
     sendDataToEachSocket(dataArray[0])
     if (dataArray.length > 1){
-        setTimeout(() => {sendDataWithInterval(dataArray.slice(1))
+        setTimeout(() => {
+            sendDataWithInterval(dataArray.slice(1))
         }, sleepInterval);
     }
 }
