@@ -236,9 +236,9 @@ async function setDataToDevice(json) {
 }
 var date = new Date()
 function sendDataWithInterval(dataArray){
-    
+    var buf = dataArray[0]
     console.log("time="+(new Date()-date))
-    sendDataToEachSocket(dataArray[0])
+    sendDataToEachSocket(buf)
     if (dataArray.length > 1){
         setTimeout(() => {
             sendDataWithInterval(dataArray.slice(1))
