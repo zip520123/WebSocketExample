@@ -212,7 +212,8 @@ async function setDataToDevice(json) {
     })
 
 
-    sendDataWithInterval(dataArray)
+    // sendDataWithInterval(dataArray)
+
     // (function sendLoop(array){
     //     sendDataToEachSocket(array[0])    
     //     if (array.length > 1){
@@ -222,15 +223,33 @@ async function setDataToDevice(json) {
     //     }
     // })(dataArray)
 
-    // var f = (array) => {
-    //     sendDataToEachSocket(array[0])
-    //     if (array.length > 1){
-    //         setTimeout(()=>{
-    //           f(array.slice(1))
-    //         },sleepInterval)
+    var f = (array) => {
+        sockets.forEach(socket => {
+            if (socket.server !== true) {
+                console.log("time="+(new Date()-date))
+                console.log(array[0])
+                socket.write(array[0], () =>{
+                    if (array.lenght > 0){
+                        setTimeout(() => {
+                            f(array.slice(1))
+                        }, sleepInterval);
+                    }
+                })
+            }
+        });
+    }
+    f(dataArray)
+
+    // sockets.forEach(socket => {
+    //     if (socket.server !== true) {
+    //         console.log("time="+(new Date()-date))
+    //         console.log(data)
+    //         socket.write(data, () =>{
+
+    //         })
     //     }
-    // }
-    // f(dataArray)
+    // });
+
 }
 var date = new Date()
 function sendDataWithInterval(dataArray){
