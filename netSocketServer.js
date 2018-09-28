@@ -5,7 +5,7 @@ var server = net.createServer();
 const listenPort = 8080
 var sockets = [];
 const getInfoInterval = 15000
-const sleepInterval = 100
+const sleepInterval = 1000
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
@@ -102,8 +102,8 @@ server.on('connection', function (socket) {
     });
     socket.on('error', function (error) {
         console.log('Error : ' + error);
-        console.log('remove socket from sockets pool');
-        removeSocket(socket)
+        // console.log('remove socket from sockets pool');
+        // removeSocket(socket)
     });
     socket.on('timeout', function () {
         console.log('Socket timed out !');
@@ -120,6 +120,7 @@ server.on('connection', function (socket) {
         console.log('Bytes read : ' + bread);
         console.log('Bytes written : ' + bwrite);
         console.log('Socket closed!');
+        
         // clearInterval(getInfoTimer)
         if (error) {
             console.log('Socket was closed coz of transmission error');
@@ -240,6 +241,10 @@ async function setDataToDevice(json) {
     }
     f(dataArray)
 
+    
+    dataArray.map((item, index)=>{
+
+    })
     // sockets.forEach(socket => {
     //     if (socket.server !== true) {
     //         console.log("time="+(new Date()-date))
