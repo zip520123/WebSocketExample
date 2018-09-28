@@ -4,13 +4,13 @@ var parseData = require('./paresData.js')
 var server = net.createServer();
 const listenPort = 8080
 var sockets = [];
-const getInfoInterval = 15000
+const getInfoInterval = 60000
 const sleepInterval = 1000
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
         if (socket.server !== true) {
-            // getInfo(socket)
+            getInfo(socket)
         }
     });
 }, getInfoInterval);
@@ -242,9 +242,6 @@ async function setDataToDevice(json) {
     f(dataArray)
 
     
-    dataArray.map((item, index)=>{
-
-    })
     // sockets.forEach(socket => {
     //     if (socket.server !== true) {
     //         console.log("time="+(new Date()-date))
