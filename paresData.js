@@ -58,6 +58,12 @@ function setDataBackToServer(data) {
     if (data.readUInt16BE() === 0xaa28) {
         var value = data.readUInt8(2)
         json.Mode = value
+        json.FeedSetting = {}
+        for (var i = 0 ; i < 6 ; i += 1){
+            var dataIndex = 'Data' + i
+            json.FeedSetting[dataIndex] = [0,0,0,0,0,0,0,0,0,0]   
+        }
+        
     }
     if (data.readUInt16BE() === 0xaa26) {
         var value = data.readUInt8(2)
