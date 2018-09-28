@@ -158,8 +158,6 @@ async function setDataToDevice(json) {
 
     const dataArray = []
 
-    
-
     const modeBuf = Buffer.alloc(16)
     modeBuf.write('aa90', 0, 'hex')
     modeBuf.writeUInt8(json.Mode, 2)
@@ -209,7 +207,7 @@ async function setDataToDevice(json) {
         json.FeedSetting[dataIndex].forEach((data, index2) => {
             buf.writeUInt8(data, index2 + 3)
         })
-        console.log(buf)
+        // console.log(buf)
         dataArray.push(buf)
     })
 
@@ -237,7 +235,7 @@ async function setDataToDevice(json) {
 var date = new Date()
 function sendDataWithInterval(dataArray){
     var buf = dataArray[0]
-    console.log("time="+(new Date()-date))
+    
     sendDataToEachSocket(buf)
     if (dataArray.length > 1){
         setTimeout(() => {
@@ -270,6 +268,8 @@ rl.on('line', function (line) {
 function sendDataToEachSocket(data) {
     sockets.forEach(socket => {
         if (socket.server !== true) {
+            console.log("time="+(new Date()-date))
+            console.log(data)
             socket.write(data)
         }
     });
