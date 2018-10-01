@@ -30,6 +30,9 @@ module.exports = {
     },
     postJSON: function (json) {
         postJSON(json)
+    },
+    postJONSinfo: function(json){
+        postDeviceInfo(json)
     }
 }
 
@@ -113,7 +116,19 @@ function postJSON(json) {
         console.log(error, body);
     });
 }
-
+function postDeviceInfo(json){
+    console.log(json)
+    request.post({
+        headers: {
+            'content-type': 'application/json'
+        },
+        url: serverHost + '/deviceinfo',
+        body: json,
+        json: true
+    }, function (error, response, body) {
+        console.log(body);
+    });
+}
 function deviceInfo(data) {
     //aa241100100e7a
     // const buf = Buffer.alloc(16);
@@ -121,6 +136,7 @@ function deviceInfo(data) {
     // buf.writeUInt8(0xAB,15)
 
     // aa 24 00 11 29 7a "01 86 a0" "01 86 a0" 00 00 ab
+    // aa 24 11 01 0a 32 7a 01 4c 08 00 00 00 00 00 ab
     var battery = data.readUInt8(2)
     var status = data.readUInt8(3)
     var hour = data.readUInt8(4)
@@ -135,7 +151,7 @@ function deviceInfo(data) {
     // var day_WI_3 = data.readUInt8(12)
     var daWi = data.readIntBE(10,3)
     var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
-    var jsonDataObj = {
+    var json = {
         "FeederID": "138fbf4e-12e3-4591-b769-d635e4476348",
         "Timestamp": date,
         "Status": status,
@@ -147,15 +163,6 @@ function deviceInfo(data) {
         "TotalWeight": toWi,
         "DayWeight": daWi
     }
-    console.log(jsonDataObj)
-    request.post({
-        headers: {
-            'content-type': 'application/json'
-        },
-        url: serverHost + '/deviceinfo',
-        body: jsonDataObj,
-        json: true
-    }, function (error, response, body) {
-        console.log(body);
-    });
+    postDeviceInfo(json)
+    
 }

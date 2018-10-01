@@ -143,9 +143,9 @@ function sendNoConnection(){
         "FeederID": "138fbf4e-12e3-4591-b769-d635e4476348",
         "HashID": "8657194522",
         "Timestamp": date,
-        "Status" : 0
+        "Connection" : 0
     }
-    parseData.postJSON(json)
+    parseData.postJONSinfo(json)
 }
 
 function removeSocket(socket) {
