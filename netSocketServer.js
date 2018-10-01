@@ -13,6 +13,15 @@ var getInfoTimer = setInterval(() => {
             getInfo(socket)
         }
     });
+    var needSendNoConnection = false
+    sockets.map(socket =>{
+        if (socket.server !== true){
+            needSendNoConnection = true
+        }
+    })
+    if (needSendNoConnection === true){
+        sendNoConnection()
+    }
 }, getInfoInterval);
 
 server.on('close', function () {
@@ -128,6 +137,16 @@ server.on('connection', function (socket) {
     });
 
 })
+function sendNoConnection(){
+    var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+    var json = {
+        "FeederID": "138fbf4e-12e3-4591-b769-d635e4476348",
+        "HashID": "8657194522",
+        "Timestamp": date,
+        "Status" : 0
+    }
+    parseData.postJSON(json)
+}
 
 function removeSocket(socket) {
     sockets.splice(sockets.indexOf(socket), 1);

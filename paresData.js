@@ -27,6 +27,9 @@ module.exports = {
                 console.log('parse not in case')
                 break;
         }
+    },
+    postJSON: function (json) {
+        postJSON(json)
     }
 }
 
@@ -59,7 +62,7 @@ function setDataBackToServer(data) {
         var value = data.readUInt8(2)
         json.Mode = value
         json.FeedSetting = {}
-        for (var i = 0 ; i < 6 ; i += 1){
+        for (var i = 1 ; i <= 6 ; i += 1){
             var dataIndex = 'Data' + i
             json.FeedSetting[dataIndex] = [0,0,0,0,0,0,0,0,0,0]   
         }
@@ -116,17 +119,21 @@ function deviceInfo(data) {
     // const buf = Buffer.alloc(16);
     // buf.write('aa241100100e7a',0,'hex')
     // buf.writeUInt8(0xAB,15)
+
+    // aa 24 00 11 29 7a "01 86 a0" "01 86 a0" 00 00 ab
     var battery = data.readUInt8(2)
     var status = data.readUInt8(3)
     var hour = data.readUInt8(4)
     var min = data.readUInt8(5)
     var voltage = data.readUInt8(6)
-    var total_WI_1 = data.readUInt8(7)
-    var total_WI_2 = data.readUInt8(8)
-    var total_WI_3 = data.readUInt8(9)
-    var day_WI_1 = data.readUInt8(10)
-    var day_WI_2 = data.readUInt8(11)
-    var day_WI_3 = data.readUInt8(12)
+    // var total_WI_1 = data.readUInt8(7)
+    // var total_WI_2 = data.readUInt8(8)
+    // var total_WI_3 = data.readUInt8(9)
+    var toWi = data.readIntBE(7,3)
+    // var day_WI_1 = data.readUInt8(10)
+    // var day_WI_2 = data.readUInt8(11)
+    // var day_WI_3 = data.readUInt8(12)
+    var daWi = data.readIntBE(10,3)
     var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
     var jsonDataObj = {
         "FeederID": "138fbf4e-12e3-4591-b769-d635e4476348",
@@ -137,8 +144,8 @@ function deviceInfo(data) {
         "Battery": battery,
         "Solar": 1,
         "Voltage": voltage,
-        "TotalWeight": 250,
-        "DayWeight": 200
+        "TotalWeight": toWi,
+        "DayWeight": daWi
     }
     console.log(jsonDataObj)
     request.post({
