@@ -145,11 +145,11 @@ function deviceInfo(data) {
     // var total_WI_1 = data.readUInt8(7)
     // var total_WI_2 = data.readUInt8(8)
     // var total_WI_3 = data.readUInt8(9)
-    var toWi = data.readIntBE(7,3)
+    var toWi = data.readIntBE(7,3) / 1000
     // var day_WI_1 = data.readUInt8(10)
     // var day_WI_2 = data.readUInt8(11)
     // var day_WI_3 = data.readUInt8(12)
-    var daWi = data.readIntBE(10,3)
+    var daWi = data.readIntBE(10,3) / 1000
     var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
     var json = {
         "FeederID": "138fbf4e-12e3-4591-b769-d635e4476348",
@@ -160,8 +160,8 @@ function deviceInfo(data) {
         "Battery": battery,
         "Solar": 1,
         "Voltage": voltage,
-        "TotalWeight": toWi,
-        "DayWeight": daWi
+        "TotalWeight": toWi ,
+        "DayWeight": daWi 
     }
     postDeviceInfo(json)
     
