@@ -34,6 +34,7 @@ server.on('connection', function (socket) {
     //Users who experience large or growing bufferSize should attempt to "throttle" the data flows in their program with pause() and resume().
     // socket.setEncoding('hex');
     sockets.push(socket)
+    socket.setNoDelay()
     console.log('Buffer size : ' + socket.bufferSize);
 
     console.log('---------server details -----------------');
