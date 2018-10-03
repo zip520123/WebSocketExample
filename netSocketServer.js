@@ -189,9 +189,9 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function setDataToDevice(json) {
+function setDataToDevice(json) {
 
-    const dataArray = []
+    var dataArray = []
 
     const modeBuf = Buffer.alloc(16)
     modeBuf.write('aa90', 0, 'hex')
@@ -258,22 +258,26 @@ async function setDataToDevice(json) {
     //     }
     // })(dataArray)
 
-    var f = (array) => {
-        sockets.forEach(socket => {
-            if (socket.server !== true) {
-                console.log("time="+(new Date()-date))
-                console.log(array[0])
-                socket.write(array[0], () =>{
-                    if (array.length > 1){
-                        setTimeout(() => {
-                            f(array.slice(1))
-                        }, sleepInterval);
-                    }
-                })
+
+    
+
+    var f = (array , socket) => {
+        console.log("time="+(new Date()-date))
+        console.log(array[0])
+        socket.write(array[0], () =>{
+            if (array.length > 1){
+                setTimeout(() => {
+                    f(array.slice(1) , socket)
+                }, sleepInterval);
             }
-        });
+        })
     }
-    f(dataArray)
+    sockets.map(socket => {
+        if (socket.server !== true){
+            f(dataArray, socket)
+        }
+    })
+    
 
     
     // sockets.forEach(socket => {
