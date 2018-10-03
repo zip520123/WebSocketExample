@@ -6,6 +6,8 @@ const listenPort = 8080
 var sockets = [];
 const getInfoInterval = 60000
 const sleepInterval = 1000
+var date = new Date()
+var logName = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + ".log"
 
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
@@ -65,21 +67,20 @@ server.on('connection', function (socket) {
     });
     socket.on('data', (data) => {
 
-
+        var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
 
         console.log('--------------------------------------------')
-        fs.appendFile("log.txt", '\n--------------------------------------------\n', (e) => {})
+        
         try {
             console.log(data)
-
             var json = JSON.parse(data.toString('utf8'))
             if (json.server == true) {
-
-                fs.appendFile("log.txt", data.toString('utf8'), function (err) {
-                    if (err) {
-                        return console.log("writeFile error: " + err);
-                    }
-                });
+                writeLog(data.toString('utf8'))    
+                // fs.appendFile(logName, data.toString('utf8'), function (err) {
+                //     if (err) {
+                //         return console.log("writeFile error: " + err);
+                //     }
+                // });
 
                 socket.server = true
                 setDataToDevice(json)
@@ -90,10 +91,12 @@ server.on('connection', function (socket) {
 
                 // });
                 // console.log('json parse success but not server: ' + JSON.stringify(json, null, 2))
+                writeLog(data.toJSON())
                 parseData.parseData(data)
             }
         } catch (error) {
             console.log('error: ' + error)
+            // writeLog(error)
             parseData.parseData(data)
         }
 
@@ -111,6 +114,7 @@ server.on('connection', function (socket) {
     });
     socket.on('error', function (error) {
         console.log('Error : ' + error);
+        writeLog('socket on error : ' + error)
         // console.log('remove socket from sockets pool');
         // removeSocket(socket)
     });
@@ -151,7 +155,17 @@ function sendNoConnection(){
 function removeSocket(socket) {
     sockets.splice(sockets.indexOf(socket), 1);
 }
+function writeLog(string){
+    var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
 
+    fs.appendFile(logName, '\n--------------' + date + '---------\n', (e) => {})
+    fs.appendFile(logName, string, function (err) {
+        if (err) {
+            return console.log("writeFile error: " + err);
+        }
+    });
+
+}
 function getInfo(socket) {
     console.log('send getInfo command')
     const buf = Buffer.alloc(16);
