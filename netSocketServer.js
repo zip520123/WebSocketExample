@@ -116,7 +116,8 @@ server.on('connection', function (socket) {
         console.log('Error : ' + error);
         writeLog('socket on error : ' + error)
         // console.log('remove socket from sockets pool');
-        // removeSocket(socket)
+        socket.destroy()
+        removeSocket(socket)
     });
     socket.on('timeout', function () {
         console.log('Socket timed out !');
@@ -136,7 +137,7 @@ server.on('connection', function (socket) {
         
         // clearInterval(getInfoTimer)
         if (error) {
-            console.log('Socket was closed coz of transmission error');
+            console.log('Socket was closed coz of transmission error :' + error);
         }
     });
 
