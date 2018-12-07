@@ -222,12 +222,7 @@ function setDataToDevice(json) {
     // sendDataToEachSocket(preRotaBuf)
     // await sleep(sleepInterval)
 
-    const playBuf = Buffer.alloc(16)
-    playBuf.write('aa25', 0, 'hex')
-    playBuf.writeUInt8(json.Status, 2)
-    playBuf.writeUInt8(0xAB, 15)
 
-    dataArray.push(playBuf)
     // sendDataToEachSocket(playBuf)
     // await sleep(sleepInterval)
 
@@ -246,7 +241,13 @@ function setDataToDevice(json) {
         // console.log(buf)
         dataArray.push(buf)
     })
+    
+    const playBuf = Buffer.alloc(16)
+    playBuf.write('aa25', 0, 'hex')
+    playBuf.writeUInt8(json.Status, 2)
+    playBuf.writeUInt8(0xAB, 15)
 
+    dataArray.push(playBuf)
 
     // sendDataWithInterval(dataArray)
 
