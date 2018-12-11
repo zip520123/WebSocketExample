@@ -90,11 +90,12 @@ server.on('connection', function (socket) {
             else {
                 writeLog(data.toJSON())
                 if (ignoreDeviceFlag === false){
+                    console.log("ignoreDeviceFlag = " , ignoreDeviceFlag)
                     parseData.parseData(data)
                 }
             }
         } catch (error) {
-            console.log('error: ' + error)
+            console.log('error: ' + error + "ignoreDeviceFlag = " + ignoreDeviceFlag)
             if (ignoreDeviceFlag === false){
                 parseData.parseData(data)
             }
@@ -265,12 +266,14 @@ function setDataToDevice(json) {
         })
     }
     ignoreDeviceFlag = true
+    console.log("send socket ignoreDeviceFlag : ", ignoreDeviceFlag)
     sockets.map(socket => {
         if (socket.server !== true){
             f(dataArray, socket)
         }
     })
     ignoreDeviceFlag = false
+    console.log("send socket end ignoreDeviceFlag : ", ignoreDeviceFlag)
 
 }
 var date = new Date()
