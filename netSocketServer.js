@@ -87,12 +87,12 @@ server.on('connection', function (socket) {
                 setDataToDevice(json)
 
             } 
-            // else {
-            //     writeLog(data.toJSON())
-            //     if (ignoreDeviceFlag === false){
-            //         parseData.parseData(data)
-            //     }
-            // }
+            else {
+                writeLog(data.toJSON())
+                if (ignoreDeviceFlag === false){
+                    parseData.parseData(data)
+                }
+            }
         } catch (error) {
             console.log('error: ' + error)
             if (ignoreDeviceFlag === false){
@@ -254,7 +254,7 @@ function setDataToDevice(json) {
     // })(dataArray)
 
     var f = (array , socket) => {
-        console.log("time="+(new Date()-date))
+        //console.log("time="+(new Date()-date))
         console.log(array[0])
         socket.write(array[0], () =>{
             if (array.length > 1){
