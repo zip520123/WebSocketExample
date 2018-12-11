@@ -20,9 +20,9 @@ module.exports = {
 
                 setDataBackToServer(data)
                 break;
-            case 0xaa32: //reset
-                resetRequest()
-                break;
+            // case 0xaa32: //reset
+            //     resetRequest()
+            //     break;
             default:
                 console.log('parse not in case')
                 break;
