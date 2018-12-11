@@ -90,13 +90,15 @@ server.on('connection', function (socket) {
             } 
             else {
                 writeLog(data.toJSON())
-                
-                parseData.parseData(data)
-                
+                if (ignoreDeviceFlag == false) {
+                    parseData.parseData(data)
+                }
             }
         } catch (error) {
             console.log('error: ' + error )
-            parseData.parseData(data)
+            if (ignoreDeviceFlag == false) {
+                parseData.parseData(data)
+            }
             
         }
 
@@ -184,7 +186,7 @@ function sleep(ms) {
 }
 
 function setDataToDevice(json) {
-
+    console.log("setDataToDevice")
     var dataArray = []
 
     const modeBuf = Buffer.alloc(16)
@@ -219,7 +221,7 @@ function setDataToDevice(json) {
     // sendDataToEachSocket(playBuf)
     // await sleep(sleepInterval)
 
-    console.log("setDataToDevice")
+    
     
     Object.keys(json.FeedSetting).forEach((dataIndex, index) => {
         var buf = Buffer.alloc(16)
@@ -265,14 +267,12 @@ function setDataToDevice(json) {
         })
     }
     
-    
-    if (ignoreDeviceFlag == false) {
-        sockets.map(socket => {
-            if (socket.server !== true){
-                f(dataArray, socket)
-            }
-        })
-    }
+    sockets.map(socket => {
+        if (socket.server !== true){
+            f(dataArray, socket)
+        }
+    })
+
 
 }
 var date = new Date()
