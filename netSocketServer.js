@@ -86,29 +86,19 @@ server.on('connection', function (socket) {
                 socket.server = true
                 setDataToDevice(json)
 
-            } else {
-                // fs.appendFile("log.txt", data.toString('hex'), function (err) {
-                //     if (err) { return console.log("writeFile error: " + err);                  }
-
-                // });
-                // console.log('json parse success but not server: ' + JSON.stringify(json, null, 2))
-                writeLog(data.toJSON())
-                if (ignoreDeviceFlag === false){
-                    parseData.parseData(data)
-                }
-                
-            }
+            } 
+            // else {
+            //     writeLog(data.toJSON())
+            //     if (ignoreDeviceFlag === false){
+            //         parseData.parseData(data)
+            //     }
+            // }
         } catch (error) {
             console.log('error: ' + error)
-            // writeLog(error)
-            parseData.parseData(data)
+            if (ignoreDeviceFlag === false){
+                parseData.parseData(data)
+            }
         }
-
-        // console.log('start interval get info')
-        // getInfoTimer = setInterval(() => {
-        //     getInfo(socket)
-        // }, getInfoInterval);
-        // parseData.parseData(data)
 
 
     });
