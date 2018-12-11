@@ -84,11 +84,13 @@ server.on('connection', function (socket) {
                 // });
 
                 socket.server = true
+                ignoreDeviceFlag = true
                 setDataToDevice(json)
-
+                ignoreDeviceFlag = false
             } 
             else {
                 writeLog(data.toJSON())
+                
                 parseData.parseData(data)
                 
             }
@@ -263,7 +265,7 @@ function setDataToDevice(json) {
         })
     }
     
-    ignoreDeviceFlag = true
+    
     if (ignoreDeviceFlag == false) {
         sockets.map(socket => {
             if (socket.server !== true){
@@ -271,8 +273,6 @@ function setDataToDevice(json) {
             }
         })
     }
-    ignoreDeviceFlag = false
-    
 
 }
 var date = new Date()
