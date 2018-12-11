@@ -8,7 +8,7 @@ const getInfoInterval = 60000
 const sleepInterval = 1000
 var date = new Date()
 var logName = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + ".log"
-var ignoreDeviceFlag = false
+
 var getInfoTimer = setInterval(() => {
     sockets.forEach(socket => {
         if (socket.server !== true) {
@@ -84,21 +84,18 @@ server.on('connection', function (socket) {
                 // });
 
                 socket.server = true
-                ignoreDeviceFlag = true
+                
                 setDataToDevice(json)
                 
             } 
             else {
                 writeLog(data.toJSON())
-                if (ignoreDeviceFlag == false) {
-                    parseData.parseData(data)
-                }
+                parseData.parseData(data)    
             }
         } catch (error) {
             console.log('error: ' + error )
-            if (ignoreDeviceFlag == false) {
-                parseData.parseData(data)
-            }
+            parseData.parseData(data)
+            
             
         }
 
@@ -263,8 +260,6 @@ function setDataToDevice(json) {
                 setTimeout(() => {
                     f(array.slice(1) , socket)
                 }, sleepInterval);
-            }else{
-                ignoreDeviceFlag = false
             }
         })
     }
