@@ -86,7 +86,7 @@ server.on('connection', function (socket) {
                 socket.server = true
                 ignoreDeviceFlag = true
                 setDataToDevice(json)
-                ignoreDeviceFlag = false
+                
             } 
             else {
                 writeLog(data.toJSON())
@@ -263,6 +263,8 @@ function setDataToDevice(json) {
                 setTimeout(() => {
                     f(array.slice(1) , socket)
                 }, sleepInterval);
+            }else{
+                ignoreDeviceFlag = false
             }
         })
     }
