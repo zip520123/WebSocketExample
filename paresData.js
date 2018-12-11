@@ -17,7 +17,6 @@ module.exports = {
             case 0xaa28: //mode
             case 0xaa26: //feed
             case 0xaa27: //preRotation
-
                 setDataBackToServer(data)
                 break;
             // case 0xaa32: //reset
